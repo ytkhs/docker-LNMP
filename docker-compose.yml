@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+
+  nginx:
+    container_name: nginx
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  php:
+    container_name: php
+    build: ./php
+    volumes:
+      - ./src:/var/www/html
+    hostname: localhost
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    volumes:
+      - v_mysql:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wp
+      MYSQL_USER: user_name
+      MYSQL_PASSWORD: user_password
+      TZ: Asia/Tokyo
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    environment:
+      # PMA_ARBITRARY=1を指定してあげると、サーバーをローカル以外も指定ができるようになる。
+      #- PMA_ARBITRARY=1
+      - PMA_HOSTS=mysql
+      # ユーザー名とパスワードを指定すると、入力しなくて済むようになる。
+      - PMA_USER=user_name
+      - PMA_PASSWORD=user_password
+      - TZ=Asia/Tokyo
+    restart: always
+    ports:
+      - "8081:80"
+    volumes:
+      # phpMyAdminにインポートする上限サイズを決める設定ファイル
+      - ./phpmyadmin/phpmyadmin.ini:/usr/local/etc/php/conf.d/phpmyadmin.ini
+
+volumes:
+  v_mysql:
