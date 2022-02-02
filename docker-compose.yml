@@ -16,7 +16,6 @@ services:
     build: ./php
     volumes:
       - ./src:/var/www/html
-    hostname: localhost
 
   mysql:
     container_name: mysql
