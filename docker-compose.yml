@@ -4,7 +4,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:stable-alpine
+    build: ./nginx
     ports:
       - "8080:80"
     volumes:
