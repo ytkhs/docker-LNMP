@@ -1,6 +1,6 @@
 FROM nginx:latest
 
-RUN apt-get clean && apt-get update && apt-get install -y nano spawn-fcgi fcgiwrap wget curl
+RUN apt-get clean && apt-get update && apt-get install -y spawn-fcgi fcgiwrap wget curl tree
 RUN sed -i 's/www-data/nginx/g' /etc/init.d/fcgiwrap
 RUN chown nginx:nginx /etc/init.d/fcgiwrap
 
